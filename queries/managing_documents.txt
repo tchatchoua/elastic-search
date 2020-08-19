@@ -121,3 +121,23 @@ POST /products/_delete_by_query
     "match_all":{}
   }
 }
+
+# Perform bulk operation
+POST /_bulk
+{"index":{"_index":"products","_id":200} }
+{"name":"expresson machine 1","price":199,"in_stock":5}
+{"create": {"_index":"products","_id":201} }
+{"name":"Milk frother", "price":149,"in_stock":14 }
+
+GET /products/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+# bulk update and delete
+POST /products/_bulk
+{"update":{"_id":201}}
+{"doc": {"price":129}}
+{"delete":{"_id":200}}
