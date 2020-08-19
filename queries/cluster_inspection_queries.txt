@@ -1,0 +1,28 @@
+GET /_cluster/health
+
+GET /_cat/nodes?v
+
+GET /_cat/indices?v
+
+GET /_cat/shards?v
+
+GET /.kibana_1/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+PUT /people
+
+DELETE /people
+
+# Create index and specifify shards
+# and replicas
+PUT /pages
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 2
+  }
+}

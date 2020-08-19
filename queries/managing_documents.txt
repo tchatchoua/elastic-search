@@ -1,0 +1,123 @@
+POST /products/_doc
+{
+  "name":"coffee maker",
+  "price":64,
+  "in_stock":10
+}
+
+# index document and specify the ID
+POST /products/_doc/100
+{
+  "name":"Toaster",
+  "price":49,
+  "in_stock":4
+}
+
+# Get document by ID
+GET /products/_doc/100
+
+# Update document
+POST /products/_update/100
+{
+  "doc": {
+    "in_stock":3
+  }
+}
+
+# Add new field to documents
+POST /products/_update/100
+{
+  "doc": {
+    "tags":["electronics"]
+  }
+}
+
+# update document using script
+POST /products/_update/100
+{
+  "script": {
+    "source": "ctx._source.in_stock--"
+  }
+}
+
+POST /products/_update/100
+{
+  "script": {
+    "source": "ctx._source.in_stock=10"
+  }
+}
+
+# Passing parameter to script
+POST /products/_update/100
+{
+  "script": {
+    "source": "ctx._source.in_stock -= params.quantity",
+    "params": {
+      "quantity":4
+    }
+  }
+}
+
+POST /products/_update/100
+{
+  "script": {
+    "source": """ 
+      if (ctx._source.in_stock == 0) {
+        ctx.op = 'noop'
+      }
+      ctx._source.in_stock--
+    """
+  }
+}
+
+# Update if exist or create new record
+POST /products/_update/101
+{
+  "script": {
+    "source": "ctx._source.in_stock--"
+  },
+  "upsert": {
+    "name":"Blender",
+    "price":399,
+    "in_stock":5
+  }
+}
+
+# upsert document
+PUT /products/_doc/101
+{
+  "name":"Blender",
+  "price":100,
+  "in_stock":5
+}
+
+# Delete document
+DELETE /products/_doc/101
+
+# Updating document with concurrency control
+POST /products/_update/101?if_primary_term=2&if_seq_no=16
+{
+  "doc": {
+    "in_stock":190
+  }
+}
+
+# Update document by query
+POST /products/_update_by_query 
+{
+  "conflicts": "proceed", 
+  "script": {
+    "source": "ctx._source.in_stock--"
+  },
+  "query": {
+    "match_all": {}
+  }
+}
+
+# Delete by query
+POST /products/_delete_by_query
+{
+  "query":{
+    "match_all":{}
+  }
+}
